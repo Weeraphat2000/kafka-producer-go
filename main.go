@@ -6,14 +6,26 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/segmentio/kafka-go"
 )
 
+func middleware(c *fiber.Ctx) error {
+	// Do something before the request is handled
+	fmt.Println("Middleware: Request received")
+	fmt.Println("Method:", c.Method())
+	fmt.Println("Path:", c.Path())
+	fmt.Println("Body:", string(c.Body()))
+
+	return c.Next()
+}
+
 func main() {
 
 	app := fiber.New()
+	app.Use(middleware)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, Kafka-go!")
